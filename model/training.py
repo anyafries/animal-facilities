@@ -88,7 +88,7 @@ def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
             if phase == 'val' and epoch_loss < best_loss and epoch_loss < 400:
                 best_loss = epoch_loss
                 # save the model
-                filename = f"{model_dir}/model_{epoch+1}.pth.tar"
+                filename = f"{model_dir}/best_model.pth.tar"
                 logging.info(f"Saving the model at epoch {epoch+1}, saving in {filename}")
                 save_checkpoint({
                     'epoch': epoch + 1,
@@ -98,7 +98,7 @@ def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
                 }, filename=filename)
                 # save best eval metrics in a json file in the model directory
                 metrics = {'epoch': epoch + 1, 'loss': epoch_loss, 'mae': epoch_mae}
-                save_dict_to_json(metrics, f"{model_dir}/metrics_eval_best_weights.json")
+                save_dict_to_json(metrics, f"{model_dir}/best_model_eval_metrics.json")
 
         train_loss, val_loss = losses['train'][-1], losses['val'][-1]
         train_mae, val_mae = mae['train'][-1], mae['val'][-1]
