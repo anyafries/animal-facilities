@@ -105,11 +105,13 @@ def save_checkpoint(state, filename="mycheckpoint.pth.tar"):
     torch.save(state, filename)
 
 
-def load_checkpoint(model, optimizer, checkpoint, scheduler):
+def load_checkpoint(checkpoint, model, optimizer=None, scheduler=None):
     checkpoint = torch.load(checkpoint)
     model.load_state_dict(checkpoint['state_dict'])
-    optimizer.load_state_dict(checkpoint['optimizer'])
-    scheduler.load_state_dict(checkpoint['scheduler'])
+    if optimizer is not None:
+        optimizer.load_state_dict(checkpoint['optimizer'])
+    if scheduler is not None:
+        scheduler.load_state_dict(checkpoint['scheduler'])
     return checkpoint['epoch']
 
 

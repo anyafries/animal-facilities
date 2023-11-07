@@ -1,0 +1,20 @@
+2023-11-07 06:13:42,263:INFO: Loading the datasets...
+2023-11-07 06:13:43,725:INFO: Creating the model, send to cuda...
+2023-11-07 06:13:47,243:INFO: Starting training for 20 epoch(s)
+2023-11-07 06:20:17,004:INFO: Saving the model at epoch 1, saving in experiments/base_model/best_model.pth.tar
+2023-11-07 06:20:17,351:INFO: Epoch: 1/20 	Train Loss: 1370.0 	Val Loss: 2168.3 		LR: 0.020000
+2023-11-07 06:20:48,973:INFO: Loading the datasets...
+2023-11-07 06:20:50,628:INFO: Creating the model, send to cuda...
+2023-11-07 06:20:54,079:INFO: Starting training for 20 epoch(s)
+2023-11-07 06:27:44,054:INFO: Saving the model at epoch 1, saving in experiments/base_model/best_model.pth.tar
+2023-11-07 06:27:45,850:INFO: Epoch: 1/20 	Train Loss: 1405.3 	Val Loss: 2945.3 		LR: 0.020000
+2023-11-07 06:34:33,208:INFO: Epoch: 2/20 	Train Loss: 1263.0 	Val Loss: 12289.3 		LR: 0.020000
+2023-11-07 06:41:30,662:INFO: Epoch: 3/20 	Train Loss: 1032.0 	Val Loss: 3461.1 		LR: 0.020000
+2023-11-07 06:48:17,803:INFO: Saving the model at epoch 4, saving in experiments/base_model/best_model.pth.tar
+2023-11-07 06:48:19,764:INFO: Epoch: 4/20 	Train Loss: 948.8 	Val Loss: 2037.0 		LR: 0.020000
+2023-11-07 06:55:17,042:INFO: Saving the model at epoch 5, saving in experiments/base_model/best_model.pth.tar
+2023-11-07 06:55:18,952:INFO: Epoch: 5/20 	Train Loss: 905.5 	Val Loss: 1186.5 		LR: 0.020000
+2023-11-07 07:02:32,470:INFO: Epoch: 6/20 	Train Loss: 806.2 	Val Loss: 2357.5 		LR: 0.020000
+2023-11-07 07:09:55,051:INFO: Epoch: 7/20 	Train Loss: 768.1 	Val Loss: 3233.9 		LR: 0.020000
+2023-11-07 07:17:02,317:INFO: Epoch: 8/20 	Train Loss: 686.9 	Val Loss: 1673.3 		LR: 0.020000
+2023-11-07 07:25:04,004:INFO: Epoch: 9/20 	Train Loss: 761.8 	Val Loss: 3305.2 		LR: 0.020000

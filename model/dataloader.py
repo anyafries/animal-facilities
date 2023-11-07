@@ -31,7 +31,7 @@ class CAFODataset(Dataset):
             transform: pytorch transforms for transforms and tensor conversion
         """
         if path is None:
-          self.path = '/content/drive/MyDrive/animal_facilities/data/all_farms/most_recent/'+farm+"/"
+          self.path = 'data/gcs/data/all_farms/most_recent/'+farm+"/"
         else:
           self.path = path
 

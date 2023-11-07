@@ -27,12 +27,13 @@ class EarlyStopper:
 
 def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders, 
                        device, early_stopper, model_dir, params, 
-                       restore_from=None):
+                       restore_from=False):
     begin_epoch = 0
+    filename = f"{model_dir}/best_model.pth.tar"
 
-    if restore_from is not None:
+    if restore_from != False:
         logging.info(f"Restoring parameters from {restore_from}")
-        begin_epoch = load_checkpoint(restore_from, model, optimizer)
+        begin_epoch = load_checkpoint(restore_from, model, optimizer, scheduler)
 
     best_loss = np.Inf
     losses = {'train': [], 'val': []}
@@ -85,10 +86,9 @@ def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
             epoch_mae = np.mean(np.abs(errors))
             mae[phase].append(epoch_mae)
 
-            if phase == 'val' and epoch_loss < best_loss and epoch_loss < 400:
+            if phase == 'val' and epoch_loss < best_loss:
                 best_loss = epoch_loss
                 # save the model
-                filename = f"{model_dir}/best_model.pth.tar"
                 logging.info(f"Saving the model at epoch {epoch+1}, saving in {filename}")
                 save_checkpoint({
                     'epoch': epoch + 1,
@@ -113,9 +113,9 @@ def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
 
         if early_stopper.early_stop(val_loss):
           print("stopping early!")
-          load_checkpoint(filename)
+          load_checkpoint(filename, model, optimizer, scheduler)
           break
 
-    load_checkpoint(filename)
+    load_checkpoint(filename, model, optimizer, scheduler)
 
     return model, losses, mae

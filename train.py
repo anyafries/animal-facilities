@@ -6,26 +6,25 @@ import os
 import random
 import torch
 
+from torch.utils.data import DataLoader
 from torchvision import transforms
 
 from model.dataloader import CAFODataset
-from model.training import train_and_evaluate
-from model.utils import Params, set_logger, EarlyStopper
 from model.models import get_resnet50 #, get_densenet121
+from model.training import train_and_evaluate, EarlyStopper
+from model.utils import Params, set_logger
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model_dir', default='experiments/base_model',
+parser.add_argument('--model_dir', default='experiments/test_model',
                     help="Experiment directory containing params.json")
-# parser.add_argument('--data_dir', default='data/64x64_SIGNS',
-#                     help="Directory containing the dataset")
 parser.add_argument('--restore_from', default=False,
                     help="Optional, directory or file containing weights to reload before training")
 
 
 if __name__ == '__main__':
     # Set the random seed for the whole graph for reproductible experiments
-    torch.set_random_seed(230)
+    torch.manual_seed(230)
 
     # Load the parameters from json file
     args = parser.parse_args()
@@ -66,7 +65,7 @@ if __name__ == '__main__':
             # transforms.Normalize(mean=[0,0,0], std=[1,1,1])
         ])
     elif params.model == 'densenet':
-        assert False, "Densenet not implemented yet"
+        raise NotImplementedError
 
     # Create the dataloaders
     logging.info("Loading the datasets...")
@@ -74,32 +73,33 @@ if __name__ == '__main__':
     val_set = CAFODataset('dairy', 'val', test_transform)
     # test_set = CAFODataset('dairy', 'test', test_transform)
 
-    train_loader = torch.utils.data.DataLoader(
-        train_set, batch_size=params.batch_size, shuffle=True, num_workers=4)
-    val_loader = torch.utils.data.DataLoader(
-        val_set, batch_size=params.batch_size, shuffle=False, num_workers=4)
-    # test_loader = torch.utils.data.DataLoader(
-    #     test_set, batch_size=params.batch_size, shuffle=False, num_workers=4)
+    train_loader = DataLoader(train_set, batch_size=params.batch_size, 
+                              shuffle=True, num_workers=2, prefetch_factor=4)
+    val_loader = DataLoader(val_set, batch_size=params.batch_size, 
+                            shuffle=False, num_workers=2, prefetch_factor=4)
+    # test_loader = DataLoader(test_set, batch_size=params.batch_size, 
+    #                          shuffle=True, num_workers=2, prefetch_factor=4)
     dataloaders = {'train': train_loader, 'val': val_loader}
 
     # Define the model
-    logging.info("Creating the model...")
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    logging.info(f"Creating the model, send to {device}...")
     if params.model == 'resnet':
-        model = get_resnet50()
+        model = get_resnet50().to(device)
     if params.model == 'densenet':
         # model = get_densenet121()
-        assert False, "Densenet not implemented yet"
+        raise NotImplementedError
 
-    # Define the loss function and optimizer
+     # Define the loss function and optimizer
     criterion = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=params.learning_rate)
     scheduler = torch.optim.lr_scheduler.StepLR(
         optimizer, step_size=params.step_size, gamma=params.gamma)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     early_stopper = EarlyStopper()
 
     # Train the model
     logging.info("Starting training for {} epoch(s)".format(params.num_epochs))
     train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
-                       device, args.model_dir, params, args.restore_from)
+                       device, early_stopper, args.model_dir, params, 
+                       args.restore_from)
     
