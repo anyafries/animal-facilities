@@ -8,7 +8,7 @@ from model.utils import save_and_reset_bn_statistics, restore_bn_statistics
 from torch.utils.tensorboard import SummaryWriter
 
 class EarlyStopper:
-    def __init__(self, patience=4, min_delta=100):
+    def __init__(self, patience=15, min_delta=100):
         self.patience = patience
         self.min_delta = min_delta
         self.counter = 0
@@ -33,15 +33,17 @@ def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
 
     if restore_from != False:
         logging.info(f"Restoring parameters from {restore_from}")
-        begin_epoch = load_checkpoint(restore_from, model, optimizer, scheduler)
+        begin_epoch = load_checkpoint(filename, model, optimizer, scheduler)
 
     best_loss = np.Inf
     losses = {'train': [], 'val': []}
     mae = {'train': [], 'val': []}
+    mape = {'train': [], 'val': []}
 
-    # For tensorboard
-    writer = SummaryWriter(log_dir=f"{model_dir}/logs")
+    # # For tensorboard
+    # writer = SummaryWriter(log_dir=f"{model_dir}/logs")
 
+    logging.info("Starting training for {} epoch(s)".format(params.num_epochs))
     for epoch in range(begin_epoch, begin_epoch + params.num_epochs):
         current_lr = scheduler.get_last_lr()[0]
 
@@ -57,6 +59,7 @@ def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
 
             squared_errors = []
             errors = []
+            mapes = []
 
             for inputs, labels in dataloader:
                 inputs = inputs.to(device).float()
@@ -77,6 +80,7 @@ def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
                 squared_error = (outputs.squeeze() - labels)**2
                 squared_errors.extend(squared_error.cpu().detach().numpy())
                 errors.extend((outputs.squeeze() - labels).cpu().detach().numpy())
+                mapes.extend(np.abs((outputs.squeeze() - labels).cpu().detach().numpy() / labels.cpu().detach().numpy()))
 
             if phase == 'train':
                 scheduler.step()
@@ -85,6 +89,8 @@ def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
             losses[phase].append(epoch_loss)
             epoch_mae = np.mean(np.abs(errors))
             mae[phase].append(epoch_mae)
+            epoch_mape = np.mean(mapes)
+            mape[phase].append(epoch_mape)
 
             if phase == 'val' and epoch_loss < best_loss:
                 best_loss = epoch_loss
@@ -97,19 +103,20 @@ def train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
                     'scheduler': scheduler.state_dict(),
                 }, filename=filename)
                 # save best eval metrics in a json file in the model directory
-                metrics = {'epoch': epoch + 1, 'loss': epoch_loss, 'mae': epoch_mae}
+                metrics = {'epoch': epoch + 1, 'loss': epoch_loss, 'mae': epoch_mae, 'mape': epoch_mape}
                 save_dict_to_json(metrics, f"{model_dir}/best_model_eval_metrics.json")
 
         train_loss, val_loss = losses['train'][-1], losses['val'][-1]
         train_mae, val_mae = mae['train'][-1], mae['val'][-1]
-        logging.info(f'Epoch: {begin_epoch+epoch+1}/{begin_epoch+params.num_epochs} \tTrain Loss: {train_loss:.1f} \tVal Loss: {val_loss:.1f} \t\tLR: {current_lr:.6f}')
+        train_mape, val_mape = mape['train'][-1], mape['val'][-1]
+        logging.info(f'Epoch: {begin_epoch+epoch+1}/{begin_epoch+params.num_epochs} \tTrain Loss: {train_loss:.1f} \tVal Loss: {val_loss:.1f} \t\tLR: {current_lr:.6f} \tVal MAE: {val_mae:.3f} \tVal MAPE: {val_mape:.3f}')
         
-        # For tensorboard
-        writer.add_scalar(f'lr', current_lr, epoch)
-        writer.add_scalar(f'train/loss', train_loss, epoch)
-        writer.add_scalar(f'val/loss', val_loss, epoch)
-        writer.add_scalar(f'train/mae', train_mae, epoch)
-        writer.add_scalar(f'val/mae', val_mae, epoch)
+        # # For tensorboard
+        # writer.add_scalar(f'lr', current_lr, epoch)
+        # writer.add_scalar(f'train/loss', train_loss, epoch)
+        # writer.add_scalar(f'val/loss', val_loss, epoch)
+        # writer.add_scalar(f'train/mae', train_mae, epoch)
+        # writer.add_scalar(f'val/mae', val_mae, epoch)
 
         if early_stopper.early_stop(val_loss):
           print("stopping early!")

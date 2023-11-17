@@ -18,6 +18,8 @@ from model.utils import Params, set_logger
 parser = argparse.ArgumentParser()
 parser.add_argument('--model_dir', default='experiments/test_model',
                     help="Experiment directory containing params.json")
+parser.add_argument('--farm', default='dairy',
+                    help="Which farm? dairy, poultry, or beef")
 parser.add_argument('--restore_from', default=False,
                     help="Optional, directory or file containing weights to reload before training")
 
@@ -28,7 +30,8 @@ if __name__ == '__main__':
 
     # Load the parameters from json file
     args = parser.parse_args()
-    json_path = os.path.join(args.model_dir, 'params.json')
+    model_dir = args.model_dir + '/' + args.farm
+    json_path = os.path.join(model_dir, 'params.json')
     assert os.path.isfile(
         json_path), "No json configuration file found at {}".format(json_path)
     params = Params(json_path)
@@ -36,22 +39,25 @@ if __name__ == '__main__':
     # Check that we are not overwriting some previous experiment
     # Comment these lines if you are developing your model and don't care about overwritting
     model_dir_has_best_weights = os.path.isdir(
-        os.path.join(args.model_dir, "best_weights"))
+        os.path.join(model_dir, "best_weights"))
     overwritting = model_dir_has_best_weights and args.restore_from is None
     assert not overwritting, "Weights found in model_dir, aborting to avoid overwrite"
 
     # Set the logger
-    set_logger(os.path.join(args.model_dir, 'train.log'))
+    set_logger(os.path.join(model_dir, 'train.log'))
+    logging.info(f"Starting training for {args.farm} @ {args.model_dir}...")
 
     # Which transforms to use?
     if params.model == 'resnet':
         transform = transforms.Compose([
+            # rotation
+            transforms.RandomRotation(90),
             transforms.CenterCrop(2048), # add first to be consistent with previous work
             transforms.Resize(255),
             transforms.CenterCrop(224),
             transforms.RandomHorizontalFlip(p=0.3),
             transforms.RandomVerticalFlip(p=0.3),
-            transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1),
+            transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
             # transforms.Normalize(mean=[0,0,0], std=[1,1,1])
@@ -69,9 +75,9 @@ if __name__ == '__main__':
 
     # Create the dataloaders
     logging.info("Loading the datasets...")
-    train_set = CAFODataset('dairy', 'train', transform)
-    val_set = CAFODataset('dairy', 'val', test_transform)
-    # test_set = CAFODataset('dairy', 'test', test_transform)
+    train_set = CAFODataset(args.farm, 'train', transform)
+    val_set = CAFODataset(args.farm, 'val', test_transform, augmented_data=False)
+    # test_set = CAFODataset(args.farm, 'test', test_transform)
 
     train_loader = DataLoader(train_set, batch_size=params.batch_size, 
                               shuffle=True, num_workers=2, prefetch_factor=4)
@@ -95,11 +101,11 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=params.learning_rate)
     scheduler = torch.optim.lr_scheduler.StepLR(
         optimizer, step_size=params.step_size, gamma=params.gamma)
-    early_stopper = EarlyStopper()
+    early_stopper = EarlyStopper(patience=params.patience, min_delta=params.min_delta)
 
     # Train the model
-    logging.info("Starting training for {} epoch(s)".format(params.num_epochs))
+    logging.info("Call the training loop...")
     train_and_evaluate(model, criterion, optimizer, scheduler, dataloaders,
-                       device, early_stopper, args.model_dir, params, 
+                       device, early_stopper, model_dir, params, 
                        args.restore_from)
     
