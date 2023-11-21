@@ -51,6 +51,6 @@ def get_unet_features(farm, split_set, save_features=False):
     # Save features
     if save_features:
         print('Saving unet features...')
-        df_out.to_csv('unet_'+farm+"_"+split_set+'.csv', index=False)
+        df_out.to_csv('unet_models/unet_'+farm+"_"+split_set+'.csv', index=False)
     else:
         return df_out
