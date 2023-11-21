@@ -6,6 +6,8 @@ from model.extract_resnet_features import get_resnet_features
 parser = argparse.ArgumentParser()
 parser.add_argument('--resnet_dir', default='experiments/bigger_model_v1', 
                     help="Directory containing weights to reload from.json")
+parser.add_argument('--simple_dir', default='experiments/simple_features', 
+                    help="Directory containing weights to reload from.json")
 parser.add_argument('--farm', default='dairy',
                     help="Which farm? dairy, poultry, or beef")
 parser.add_argument('--split_set', default='test',
@@ -21,12 +23,12 @@ if __name__ == '__main__':
     # Get features
     print('Getting features...')
     # TODO: 
-    # df_simple = 
+    df_simple = get_simple_features(simple_dir, farm, split_set)
     # df_unet = 
     df_resnet = get_resnet_features(resnet_dir, farm, split_set)
     
     # TODO: merge features
-    df_out = df_resnet 
+    df_out = pd.concat((df_simple, df_resnet), axis=1)
 
     # Save features
     print('Saving features...')
