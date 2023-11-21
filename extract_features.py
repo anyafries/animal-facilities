@@ -30,7 +30,7 @@ if __name__ == '__main__':
     df_resnet = get_resnet_features(resnet_dir, farm, split_set)
     
     # TODO: merge features
-    df_out = pd.concat((df_simple, df_resnet, df_unet), axis=1)
+    df_out = pd.concat((df_simple, df_resnet, df_unet[['unet_pixels']]), axis=1)
 
     # Save features
     print('Saving features...')
