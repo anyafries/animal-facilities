@@ -2,6 +2,7 @@ import argparse
 
 from model.extract_resnet_features import get_resnet_features
 from model.extract_simple_features import get_simple_features
+from unet_models.extract_unet_features import get_unet_features
 
 
 parser = argparse.ArgumentParser()
@@ -25,11 +26,11 @@ if __name__ == '__main__':
     print('Getting features...')
     # TODO: 
     df_simple = get_simple_features(simple_dir, farm, split_set)
-    # df_unet = 
+    df_unet = get_unet_features(farm, split_set)
     df_resnet = get_resnet_features(resnet_dir, farm, split_set)
     
     # TODO: merge features
-    df_out = pd.concat((df_simple, df_resnet), axis=1)
+    df_out = pd.concat((df_simple, df_resnet, df_unet), axis=1)
 
     # Save features
     print('Saving features...')
