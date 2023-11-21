@@ -1,6 +1,7 @@
 import argparse
 
 from model.extract_resnet_features import get_resnet_features
+from model.extract_simple_features import get_simple_features
 
 
 parser = argparse.ArgumentParser()

@@ -71,3 +71,64 @@ def evaluate(model, data_loader, device, print_out=True, return_out=False,
             plot_preds(y_true, y_pred, title)
         if return_out:
             return rmse, mae, r2, slope, intercept
+
+
+def get_xy(dataset, resnet_cols):
+    hog_means = ['hog_mean_0', 'hog_mean_1', 'hog_mean_2']
+    hog_stds = ['hog_std_0', 'hog_std_1', 'hog_std_2']
+    rgb_means = ['r_mean', 'g_mean', 'b_mean']
+    rgb_stds = ['r_std', 'g_std', 'b_std']
+    hist0 = ['hog_hist_0_min', 'hog_hist_0_LQ', 'hog_hist_0_median', 'hog_hist_0_UQ', 'hog_hist_0_max']
+    hist1 = ['hog_hist_1_min', 'hog_hist_1_LQ', 'hog_hist_1_median', 'hog_hist_1_UQ', 'hog_hist_1_max']
+    hist2 = ['hog_hist_2_min', 'hog_hist_2_LQ', 'hog_hist_2_median', 'hog_hist_2_UQ', 'hog_hist_2_max']
+    r = ['r_min', 'r_LQ', 'r_median', 'r_UQ', 'r_max']
+    g = ['g_min', 'g_LQ', 'g_median', 'g_UQ', 'g_max']
+    b = ['b_min', 'b_LQ', 'b_median', 'b_UQ', 'b_max']
+    unet_pixels = ['unet_pixels']
+    resnet = resnet_cols
+
+    var_cols = hog_means + hog_stds + rgb_means + rgb_stds + hist0 + hist1 + hist2 + r + g + b + unet_pixels + resnet
+
+    Y = dataset['population']
+    X = dataset[var_cols]
+    return X, Y
+
+
+def get_evaluation(true, pred):
+    rmse = np.sqrt(mean_squared_error(true, pred))
+    mae = mean_absolute_error(true, pred)
+    mape = mean_absolute_percentage_error(true, pred)
+    slope, intercept, r_value, p_value, std_err = linregress(true, pred)
+    return rmse, mae, mape, slope, intercept
+    
+
+def test_model(model, train, val, resnet_cols, model_name,
+               print_out=False, plot=False):
+    X, Y = get_xy(train, resnet_cols)
+    model.fit(X, Y)
+    Y_pred = model.predict(X)
+    if plot:
+        plot_preds(Y, Y_pred, f'Train preds: {model_name}')
+
+    X, Y = get_xy(val, resnet_cols)
+    Y_pred = model.predict(X)
+    if plot:
+        plot_preds(Y, Y_pred, f'Val preds: {model_name}')
+
+    rmse, mae, mape, slope, intercept = get_evaluation(Y, Y_pred)
+    r2 = model.score(X, Y)
+
+    if print_out:
+        print(f"RMSE: {rmse:.2f} \tMAE: {mae:.2f} \tMAPE: {mape:.2f} \tMAE: {mae:.2f} \tR2: {r2:.2f} \tSlope: {slope:.4f} \tIntercept {intercept:.4f}")
+    
+    out = {
+        'Model' : model_name,
+        'RMSE' : rmse,
+        'MAE' : mae,
+        'MAPE' : mape,
+        'R^2' : r2,
+        'Slope' : slope,
+        'Intercept' : intercept
+    }
+    # print(out)
+    return out
