@@ -1,17 +1,16 @@
+import math
+import matplotlib.pyplot as plt
+import numpy as np
 import os
 import pandas as pd
-import numpy as np
-from PIL import Image
-from torch.utils.data import Dataset
-from torch.utils.data import DataLoader
-from torchvision import transforms, utils
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import math
-import time
-import cv2
+
+from torchvision import transforms
+
+from model.dataloader import CAFODataset
+
 
 class HOGLayer(nn.Module):
     def __init__(self, nbins=10, pool=8, max_angle=math.pi, stride=1, padding=1, dilation=1):
@@ -131,7 +130,9 @@ def get_cols():
 def extract_simple_features(dataset):
     df = []
     hog_model = HOGLayer(nbins=3, pool=2)
-    for range(len(dataset)):
+    for i in range(len(dataset)):
+        if i % 100 == 0:
+            print(f"\t{i} / {len(dataset)}")
         image, _ = dataset[i]
         hog = extract_hog(image, hog_model)
         histogram = extract_histogram(image)
@@ -166,26 +167,30 @@ def extract_simple_features(dataset):
 
 
 def get_simple_features(model_dir, farm, split_set, save_features=False):
-    if farm == 'mn':
+    if farm in ['mn']:
         model_dir = model_dir + '/dairy'
+    elif farm in ['kt', 'og']:
+        model_dir = model_dir + '/poultry'
     else:
         model_dir = model_dir + '/' + farm
-    
-    json_path = os.path.join(model_dir, 'params.json')
+    filename = os.path.join(model_dir, 'simple_'+farm+"_"+split_set+'.csv')
 
-    transform = transforms.Compose([
-        transforms.CenterCrop(2048),
-        transforms.ToTensor(),
-    ])
-    df_in = CAFODataset(farm, split_set, transform)
-    
-    print('Extracting simple features...')
-    df_out = extract_simple_features(df_in)
-    df_out['idx'] = df_in.df['idx']
-    
-    # Save features
-    if save_features:
-        print('Saving simple features...')
-        df_out.to_csv(os.path.join(model_dir, 'simple_'+farm+"_"+split_set+'.csv'), index=False)
+    if os.path.isfile(filename):
+        return pd.read_csv(filename)
     else:
+        transform = transforms.Compose([
+            transforms.CenterCrop(2048),
+            transforms.ToTensor(),
+        ])
+        df_in = CAFODataset(farm, split_set, transform)
+        
+        print('Extracting simple features...')
+        df_out = extract_simple_features(df_in)
+        df_out['idx'] = df_in.df['idx']
+        
+        # Save features
+        if save_features:
+            print('Saving simple features...')
+            df_out.to_csv(filename, index=False)
+        
         return df_out

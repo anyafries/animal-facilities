@@ -1,18 +1,8 @@
-import os
-from matplotlib.rcsetup import validate_bool
-import pandas as pd
-import numpy as np
-from PIL import Image
-from torch.utils.data import Dataset
-from torch.utils.data import DataLoader
-import torch
-from torchvision import transforms, utils
 import matplotlib.pyplot as plt
-
-#### Dairy/Poultry UNet
-import torchmetrics
 import pytorch_lightning as pl
 import segmentation_models_pytorch as smp
+import torch
+
 from model.dataloader import URLS
 
 class UnetModel(pl.LightningModule):
@@ -30,7 +20,6 @@ class UnetModel(pl.LightningModule):
 
         # for image segmentation dice loss could be the best first choice
         self.loss_fn = smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
-        #self.jaccard = torchmetrics.JaccardIndex("binary", num_classes=out_classes)
 
         self.training_step_outputs = []
         self.validation_step_outputs = []
@@ -210,7 +199,7 @@ class UnetModel(pl.LightningModule):
 class DairyUnet:
     def __init__(self):
         self.model = UnetModel("Unet", "resnet50", in_channels=3, out_classes=3)
-        self.model.load_state_dict(torch.load('unet_models/unet_best2.pth'))
+        self.model.load_state_dict(torch.load('unet_weights/unet_best2.pth'))
         self.model.eval()
         self.model.to('cuda')
 
@@ -261,7 +250,7 @@ class PoultryUnet:
         self.model = smp.Unet(encoder_name="resnet18", encoder_depth=3,
                               encoder_weights=None, decoder_channels=(128, 64, 64),
                               in_channels=4, classes=2)
-        self.model.load_state_dict(torch.load('unet_models/train-all_unet_0.5_0.01_rotation_best-checkpoint.pt')['model_checkpoint'])
+        self.model.load_state_dict(torch.load('unet_weights/train-all_unet_0.5_0.01_rotation_best-checkpoint.pt')['model_checkpoint'])
         self.model.to('cuda')
         self.model.eval()
 
@@ -305,54 +294,4 @@ class PoultryUnet:
         plt.axis('off')
         plt.imshow(mask)
         plt.title(f'num pixels: {int(num_white)}')
-        plt.show()
-
-class PoultryCAFODataset(Dataset):
-    def __init__(self, farm, split_set, transform, resolution=256, augmented_data=True,
-                 path=None):
-        """
-        Args:
-            csv_path (string): path to csv file
-            img_path (string): path to the folder where images are
-            transform: pytorch transforms for transforms and tensor conversion
-        """
-        if farm in ['dairy', 'poultry', 'beef']:
-          self.path = 'data/gcs/data/all_farms/temporal/'
-        elif farm == 'mn':
-          self.path = 'data/gcs/data/mn/'
-        else:
-          raise NotImplementedError
-
-        self.transform = transform
-        self.df = pd.read_csv(URLS[farm][split_set])
-        if not augmented_data:
-          self.df = self.df[self.df['newest'] == True]
-        self.filenames = np.asarray(self.df['filename'])
-        self.data_len = len(self.filenames)
-
-    def __getitem__(self, index):
-        filename = self.filenames[index]#.split('/')[-1]
-        naip = Image.open(self.path+filename)
-        naip = self.transform(naip)
-        label = self.df.iloc[index, 3]
-
-        return naip, label
-
-    def __len__(self):
-        return self.data_len
-
-    def plot(self, index, transform=None):
-        if transform is None:
-          naip, label = self.__getitem__(index)
-        else:
-          filename = self.filenames[index]#.split('/')[-1]
-          naip = Image.open(self.path+filename).convert('RGB')
-          naip = transform(naip)
-          label = self.df.iloc[index, 3]
-
-        img = naip.squeeze()
-        plt.figure(figsize=(7,7))
-        plt.imshow(img.permute(1, 2, 0))
-        plt.title(f"Population: {label}")
-        plt.axis('off')
         plt.show()
