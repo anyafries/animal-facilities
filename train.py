@@ -16,7 +16,7 @@ from model.utils import Params, set_logger
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model_dir', default='experiments/test_model',
+parser.add_argument('--model_dir', default='experiments/resnet_features',
                     help="Experiment directory containing params.json")
 parser.add_argument('--farm', default='dairy',
                     help="Which farm? dairy, poultry, or beef")

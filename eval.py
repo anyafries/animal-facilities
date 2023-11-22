@@ -1,8 +1,13 @@
 import argparse
 import pandas as pd
 
-from model.evaluate import test_model
+from sklearn.linear_model import LinearRegression, Lasso, Ridge, ElasticNet
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor, AdaBoostRegressor
+from sklearn.neural_network import MLPRegressor
+from sklearn.neighbors import KNeighborsRegressor
 
+from model.evaluate import test_model
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--features_dir', default='features', 

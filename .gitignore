@@ -5,4 +5,4 @@ data/*
 unet_weights/*
 *__pycache__*
 experiments/*
-!experiments/*/params.json
+!experiments/*params.json

@@ -35,51 +35,58 @@ def extract_deep_features(model, layer, data_loader, device='cpu'):
 
 
 def get_resnet_features(model_dir, farm, split_set, save_features=False):
-    if farm == 'mn':
+    if farm in ['mn']:
         model_dir = model_dir + '/dairy'
+    elif farm in ['kt', 'og']:
+        model_dir = model_dir + '/poultry'
     else:
         model_dir = model_dir + '/' + farm
-    
-    json_path = os.path.join(model_dir, 'params.json')
-    assert os.path.isfile(
-        json_path), "No json configuration file found at {}".format(json_path)
-    params = Params(json_path)
+    filename = os.path.join(model_dir, 'resnet_'+farm+"_"+split_set+'.csv')
 
-    # Load the model
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    if params.model == 'resnet':
-        model = get_resnet50().to(device)
-    
-    # Load weights
-    restore_path = os.path.join(model_dir, 'best_model.pth.tar')
-    load_checkpoint(restore_path, model)
-
-    # Which transforms to use?
-    transform = transforms.Compose([
-        transforms.CenterCrop(2048),
-        transforms.Resize(255),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
-
-    # Load the data
-    print('Loading data for resnet...')
-    df_in = CAFODataset(farm, split_set, transform)
-    dataloader = DataLoader(df_in, batch_size=params.batch_size, 
-                            shuffle=False, num_workers=2, prefetch_factor=4)
-  
-    # Extract features
-    layer = model.fc[1]
-    print('Extracting resnet features...')
-    df_out = extract_deep_features(model, layer, dataloader, device)
-
-    # Add back farm indexes
-    df_out['idx'] = df_in.df['idx']
-
-    # Save features
-    if save_features:
-        print('Saving resnet features...')
-        df_out.to_csv(os.path.join(model_dir, 'resnet_'+farm+"_"+split_set+'.csv'), index=False)
+    if os.path.isfile(filename):
+        return pd.read_csv(filename)
     else:
+    
+        json_path = os.path.join(model_dir, 'params.json')
+        assert os.path.isfile(
+            json_path), "No json configuration file found at {}".format(json_path)
+        params = Params(json_path)
+
+        # Load the model
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        if params.model == 'resnet':
+            model = get_resnet50().to(device)
+        
+        # Load weights
+        restore_path = os.path.join(model_dir, 'best_model.pth.tar')
+        load_checkpoint(restore_path, model)
+
+        # Which transforms to use?
+        transform = transforms.Compose([
+            transforms.CenterCrop(2048),
+            transforms.Resize(255),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
+
+        # Load the data
+        print('Loading data for resnet...')
+        df_in = CAFODataset(farm, split_set, transform)
+        dataloader = DataLoader(df_in, batch_size=params.batch_size, 
+                                shuffle=False, num_workers=2, prefetch_factor=4)
+    
+        # Extract features
+        layer = model.fc[1]
+        print('Extracting resnet features...')
+        df_out = extract_deep_features(model, layer, dataloader, device)
+
+        # Add back farm indexes
+        df_out['idx'] = df_in.df['idx']
+
+        # Save features
+        if save_features:
+            print('Saving resnet features...')
+            df_out.to_csv(filename, index=False)
+        
         return df_out

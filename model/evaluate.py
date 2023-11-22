@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from scipy.stats import linregress
+from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 
 
 def plot_preds(true_value, predicted_value, title):
