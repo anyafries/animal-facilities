@@ -18,3 +18,45 @@
 2023-11-07 07:09:55,051:INFO: Epoch: 7/20 	Train Loss: 768.1 	Val Loss: 3233.9 		LR: 0.020000
 2023-11-07 07:17:02,317:INFO: Epoch: 8/20 	Train Loss: 686.9 	Val Loss: 1673.3 		LR: 0.020000
 2023-11-07 07:25:04,004:INFO: Epoch: 9/20 	Train Loss: 761.8 	Val Loss: 3305.2 		LR: 0.020000
+2023-11-07 20:05:50,293:INFO: Loading the datasets...
+2023-11-07 20:05:51,688:INFO: Creating the model, send to cuda...
+2023-11-07 20:05:54,123:INFO: Call the training loop...
+2023-11-07 20:05:54,123:INFO: Restoring parameters from experiments/base_model
+2023-11-07 20:05:54,344:INFO: Starting training for 30 epoch(s)
+2023-11-07 20:11:28,665:INFO: Loading the datasets...
+2023-11-07 20:11:30,151:INFO: Creating the model, send to cuda...
+2023-11-07 20:11:32,668:INFO: Call the training loop...
+2023-11-07 20:11:32,670:INFO: Starting training for 30 epoch(s)
+2023-11-07 20:19:29,291:INFO: Saving the model at epoch 1, saving in experiments/base_model/best_model.pth.tar
+2023-11-07 20:19:31,171:INFO: Epoch: 1/30 	Train Loss: 1413.5 	Val Loss: 2991.3 		LR: 0.020000
+2023-11-07 20:28:40,035:INFO: Saving the model at epoch 2, saving in experiments/base_model/best_model.pth.tar
+2023-11-07 20:28:41,879:INFO: Epoch: 2/30 	Train Loss: 1230.5 	Val Loss: 1170.2 		LR: 0.020000
+2023-11-07 20:39:14,569:INFO: Epoch: 3/30 	Train Loss: 989.4 	Val Loss: 1415.9 		LR: 0.020000
+2023-11-07 20:48:38,132:INFO: Epoch: 4/30 	Train Loss: 944.9 	Val Loss: 1208.2 		LR: 0.020000
+2023-11-07 20:57:54,307:INFO: Epoch: 5/30 	Train Loss: 900.9 	Val Loss: 1205.9 		LR: 0.020000
+2023-11-07 21:08:06,445:INFO: Epoch: 6/30 	Train Loss: 784.8 	Val Loss: 3820.6 		LR: 0.020000
+2023-11-07 21:18:34,382:INFO: Epoch: 7/30 	Train Loss: 722.1 	Val Loss: 5328.4 		LR: 0.020000
+2023-11-07 21:28:07,430:INFO: Saving the model at epoch 8, saving in experiments/base_model/best_model.pth.tar
+2023-11-07 21:28:09,368:INFO: Epoch: 8/30 	Train Loss: 649.6 	Val Loss: 1096.5 		LR: 0.020000
+2023-11-07 21:37:13,294:INFO: Epoch: 9/30 	Train Loss: 714.8 	Val Loss: 5012.8 		LR: 0.020000
+2023-11-07 21:46:28,936:INFO: Epoch: 10/30 	Train Loss: 676.9 	Val Loss: 3615.4 		LR: 0.020000
+2023-11-07 21:55:37,568:INFO: Epoch: 11/30 	Train Loss: 669.3 	Val Loss: 4688.1 		LR: 0.016000
+2023-11-07 22:04:19,889:INFO: Epoch: 12/30 	Train Loss: 624.8 	Val Loss: 1950.8 		LR: 0.016000
+2023-11-07 22:12:33,386:INFO: Epoch: 13/30 	Train Loss: 541.7 	Val Loss: 11655.2 		LR: 0.016000
+2023-11-07 22:20:40,560:INFO: Epoch: 14/30 	Train Loss: 498.9 	Val Loss: 4435.8 		LR: 0.016000
+2023-11-07 22:28:37,841:INFO: Epoch: 15/30 	Train Loss: 549.9 	Val Loss: 1708.3 		LR: 0.016000
+2023-11-07 22:36:34,659:INFO: Epoch: 16/30 	Train Loss: 516.1 	Val Loss: 2216.1 		LR: 0.016000
+2023-11-07 22:43:59,452:INFO: Epoch: 17/30 	Train Loss: 539.2 	Val Loss: 2886.4 		LR: 0.016000
+2023-11-07 22:51:35,901:INFO: Epoch: 18/30 	Train Loss: 464.9 	Val Loss: 8727.6 		LR: 0.016000
+2023-11-07 22:59:26,471:INFO: Epoch: 19/30 	Train Loss: 498.6 	Val Loss: 2985.5 		LR: 0.016000
+2023-11-07 23:07:02,407:INFO: Epoch: 20/30 	Train Loss: 506.4 	Val Loss: 8217.4 		LR: 0.016000
+2023-11-07 23:14:27,827:INFO: Epoch: 21/30 	Train Loss: 421.3 	Val Loss: 1243.3 		LR: 0.012800
+2023-11-07 23:21:47,351:INFO: Epoch: 22/30 	Train Loss: 398.8 	Val Loss: 1485.7 		LR: 0.012800
+2023-11-07 23:28:46,943:INFO: Epoch: 23/30 	Train Loss: 446.0 	Val Loss: 2327.3 		LR: 0.012800
+2023-11-07 23:35:47,205:INFO: Epoch: 24/30 	Train Loss: 443.8 	Val Loss: 4177.8 		LR: 0.012800
+2023-11-07 23:42:54,482:INFO: Epoch: 25/30 	Train Loss: 494.2 	Val Loss: 2142.7 		LR: 0.012800
+2023-11-07 23:50:00,816:INFO: Epoch: 26/30 	Train Loss: 722.3 	Val Loss: 4290.2 		LR: 0.012800
+2023-11-07 23:56:59,793:INFO: Epoch: 27/30 	Train Loss: 425.6 	Val Loss: 2377.5 		LR: 0.012800
+2023-11-08 00:03:43,349:INFO: Epoch: 28/30 	Train Loss: 438.9 	Val Loss: 2138.0 		LR: 0.012800
+2023-11-08 00:10:38,623:INFO: Epoch: 29/30 	Train Loss: 369.3 	Val Loss: 1953.0 		LR: 0.012800
+2023-11-08 00:17:32,953:INFO: Epoch: 30/30 	Train Loss: 381.9 	Val Loss: 8923.1 		LR: 0.012800

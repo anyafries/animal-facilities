@@ -4,6 +4,8 @@
     "learning_rate": 0.02,
     "step_size": 10,
     "gamma": 0.8,
-    "num_epochs": 20,
-    "cutoff": 0
+    "num_epochs": 30,
+    "cutoff": 0,
+    "patience": 30,
+    "min_delta": 500
 }
