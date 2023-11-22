@@ -2,3 +2,7 @@ venv_animal/*
 data/*
 .DS_Store
 *best_model.pth.tar
+unet_weights/*
+*__pycache__*
+experiments/*
+!*params.json
