@@ -74,7 +74,7 @@ def evaluate(model, data_loader, device, print_out=True, return_out=False,
             return rmse, mae, r2, slope, intercept
 
 
-def get_xy(dataset, resnet_cols):
+def get_xy(dataset, resnet_cols, only_x = False):
     hog_means = ['hog_mean_0', 'hog_mean_1', 'hog_mean_2']
     hog_stds = ['hog_std_0', 'hog_std_1', 'hog_std_2']
     rgb_means = ['r_mean', 'g_mean', 'b_mean']
@@ -90,17 +90,29 @@ def get_xy(dataset, resnet_cols):
 
     var_cols = hog_means + hog_stds + rgb_means + rgb_stds + hist0 + hist1 + hist2 + r + g + b + unet_pixels + resnet
 
-    Y = dataset['population']
     X = dataset[var_cols]
-    return X, Y
+    if only_x:
+        return X
+    else: 
+        Y = dataset['population']
+        return X, Y
 
 
 def get_evaluation(true, pred):
     rmse = np.sqrt(mean_squared_error(true, pred))
     mae = mean_absolute_error(true, pred)
     mape = mean_absolute_percentage_error(true, pred)
-    slope, intercept, r_value, p_value, std_err = linregress(true, pred)
+    slope, intercept, _, _, _ = linregress(true, pred)
     return rmse, mae, mape, slope, intercept
+
+
+def get_preds(model, train, val, resnet_cols):
+    X, Y = get_xy(train, resnet_cols)
+    model.fit(X, Y)
+
+    X = get_xy(val, resnet_cols, only_x=True)
+    Y_pred = model.predict(X)
+    return Y_pred
     
 
 def test_model(model, train, val, resnet_cols, model_name,
