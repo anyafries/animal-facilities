@@ -40,6 +40,7 @@ def get_results(FARM, train, val, resnet_cols, only_preds=False):#,
     }
     
     if only_preds:
+        results['idx'] = val['idx']
         for name, model in models.items():
             preds = get_preds(model, train, val, resnet_cols)
             results[name] = preds
@@ -78,4 +79,4 @@ if __name__ == '__main__':
     print('Getting results...')
     res = get_results(farm, train, val, resnet_cols, only_preds)
     if only_preds:
-        res.to_csv(f"features/{farm}_{split_set}_preds.csv", index=False)
+        res.to_csv(f"features/preds/{farm}_{split_set}_preds.csv", index=False)
