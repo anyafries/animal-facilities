@@ -10,13 +10,13 @@ from model.unet import DairyUnet, PoultryUnet
 def get_unet_features(farm, split_set, save_features=False):
     if farm in ['mn']:
         model_dir = 'experiments/unet_features/dairy'
-    elif farm in ['kt', 'og']:
+    elif farm in ['kt', 'kt_uncentered', 'og', 'sc', 'ms', 'ks', 'az']:
         model_dir = 'experiments/unet_features/poultry'
     else:
         model_dir = 'experiments/unet_features/' + farm
     filename = os.path.join(model_dir, 'unet_'+farm+"_"+split_set+'.csv')
 
-    if farm in ['poultry', 'kt', 'og']:
+    if farm in ['poultry', 'kt', 'kt_uncentered', 'og', 'sc', 'ms', 'ks', 'az']:
         unet = PoultryUnet()
     else:
         unet = DairyUnet()
@@ -25,7 +25,7 @@ def get_unet_features(farm, split_set, save_features=False):
         return pd.read_csv(filename)
     else:
         # Which transforms to use?
-        if farm in ['poultry', 'kt', 'og']:
+        if farm in ['poultry', 'kt', 'kt_uncentered', 'og', 'sc', 'ms', 'ks', 'az']:
             transform = transforms.Compose([
                 transforms.CenterCrop(2048),
                 transforms.ToTensor()])
@@ -37,7 +37,7 @@ def get_unet_features(farm, split_set, save_features=False):
         # Load the data
         print('Loading data for unet...')
         df_real = pd.read_csv(URLS[farm][split_set])
-        if farm in ['poultry', 'kt', 'og']:
+        if farm in ['poultry', 'kt', 'kt_uncentered', 'og', 'sc', 'ms', 'ks', 'az']:
             df_set = CAFODataset(farm, split_set, transform, poultry_unet=True)
         else:
             df_set = CAFODataset(farm, split_set, transform)

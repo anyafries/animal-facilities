@@ -37,7 +37,7 @@ def extract_deep_features(model, layer, data_loader, device='cpu'):
 def get_resnet_features(model_dir, farm, split_set, save_features=False):
     if farm in ['mn']:
         model_dir = model_dir + '/dairy'
-    elif farm in ['kt', 'og']:
+    elif farm in ['kt', 'kt_uncentered', 'og', 'sc', 'ms', 'ks', 'az']:
         model_dir = model_dir + '/poultry'
     else:
         model_dir = model_dir + '/' + farm

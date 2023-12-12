@@ -18,7 +18,7 @@ parser.add_argument('--only_preds', default=False,
                     help="Only get the predictions for the outcome variable?")
 
 
-def get_results(FARM, train, val, resnet_cols, only_preds=False):#,
+def get_results(FARM, train, val, resnet_cols, only_preds=True):#,
                 # multiple_train=False, multiple_val=False):
     # if not multiple_train:
     #     train = train[train['newest'] == True]
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     only_preds = args.only_preds == 'True'
     farm = args.farm
     train_farm = farm
-    if farm in ['kt', 'og']:
+    if farm in ['kt', 'kt_uncentered', 'og', 'sc', 'ms', 'ks', 'az']:
         train_farm = 'poultry'
     elif farm == 'mn':
         train_farm = 'dairy'
