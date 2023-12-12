@@ -1,5 +1,6 @@
 venv_animal/*
 data/*
+data-viz/*
 .DS_Store
 *best_model.pth.tar
 unet_weights/*

@@ -1,0 +1,24 @@
+# Full pipeline
+
+To run our full pipeline run the following, where `farm` is dairy, poultry, or beef, `split_set` is train, val, or test, and `train_resnet` is 1 or 0.
+
+        `./main.sh farm split_set train_resnet`
+
+For example, the following will extract features for and evaluate the validation set of the dairy model.
+
+        `./main.sh dairy val 0`
+
+
+# Separate steps
+
+To train the ResNet, run the following with the desired farm:
+        
+        `python train.py --farm dairy`
+
+To extract features, run the following, replacing dairy with the desired farm (dairy, poultry, beef, mn, kt, kt_uncentered, og, sc, or mn). `split_set` is train, val, or test.
+
+        `python extract_features.py --farm dairy --split_set train`
+
+To evaluate these predictions, run the following, replacing the farm and split_set as needed. 
+
+        `python eval.py --farm poultry --split_set val`

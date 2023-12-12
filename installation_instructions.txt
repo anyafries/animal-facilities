@@ -1,0 +1,7 @@
+All code was run using Python 3.10.12. 
+
+To install the requirements, authenticate with Google Cloud, and mount our bucket run:
+
+        `./setup.sh`
+
+The requirements are listed in requirements.txt and automatically installed with the above command.

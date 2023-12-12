@@ -1,0 +1,11 @@
+To add model weights to your environment:
+
+1. Make a folder in the home directory called unet_weights and save unet_best2.pth and train-all_unet_0.5_0.01_rotation_best-checkpoint.pt there.
+
+2. (Optional) To use our pretrained ResNets, make the following folders and save the following model weights there: 
+    a. experiments/resnet_features/beef - best_model_beef.pth (rename to best_model.pth)
+    b. experiments/resnet_features/dairy - best_model_dairy.pth (rename to best_model.pth)
+    c. experiments/resnet_features/poultry - best_model_poultry.pth (rename to best_model.pth)
+
+
+Model weights available here: https://drive.google.com/drive/u/1/folders/1vFyazLY1QlrqAjOfVaJPyI4EkL8aI6QF
