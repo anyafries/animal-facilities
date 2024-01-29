@@ -32,9 +32,19 @@ URLS = {
         # 'test': '/content/drive/MyDrive/CS 325B/splitting-files/beef_test_bigger.csv',
         # 'val': '/content/drive/MyDrive/CS 325B/splitting-files/beef_val_bigger.csv'
     },
+    # Beef validation set
     'mn': {
         'test': 'https://drive.google.com/uc?id=1mq-mZynSa3oS8m5q6QwpFQRTIpBNBQvC'
         # 'test': '/content/drive/MyDrive/CS 325B/8-same-models-more-data/mn-dairy-clean.csv'
+    },
+    # Poultry validation sets for U.S. AgCensus
+    'az': {
+        'test': 'https://drive.google.com/uc?id=13XeB1C9wIok0jBEj_iMubr2jkLw61FRi'
+        # 'test': '/content/drive/MyDrive/CS 325B/8-same-models-more-data/az-poultry.csv'
+    },
+    'ks': {
+        'test': 'https://drive.google.com/uc?id=1-3DHIOtNdn8N4I6DaZgCI9mBVUJE6GHh'
+        # 'test': '/content/drive/MyDrive/CS 325B/8-same-models-more-data/ks-poultry.csv'
     },
     'kt': {
         'test': 'https://drive.google.com/uc?id=11CMei1Wh6HIa6Q75d784DvxxN_XwCDCY'
@@ -44,6 +54,10 @@ URLS = {
         'test': 'https://drive.google.com/uc?id=1-0b3FdTJ-C8QvvWN6cOXa1esEvVGVJ29'
         # 'test': '/content/drive/MyDrive/CS 325B/8-same-models-more-data/kt-poultry-uncentered.csv'
     },
+    'ms': {
+        'test': 'https://drive.google.com/uc?id=1-0iPBgVZp4a4_s3k8M6ht7kv8qyuSEwr'
+        # 'test': '/content/drive/MyDrive/CS 325B/8-same-models-more-data/ms-poultry.csv'
+    },
     'og': {
         'test': 'https://drive.google.com/uc?id=1-Ae3D9GusBvMWQk8q_ufE95wLKo6n9qH'
         # 'test': '/content/drive/MyDrive/CS 325B/8-same-models-more-data/og-poultry.csv'
@@ -51,10 +65,6 @@ URLS = {
     'sc': {
         'test': 'https://drive.google.com/uc?id=1WGbvJqB84qC1VAAEmckkzILrfEpIyR_X'
         # 'test': '/content/drive/MyDrive/CS 325B/8-same-models-more-data/sc-poultry.csv'
-    },
-    'ms': {
-        'test': 'https://drive.google.com/uc?id=1-0iPBgVZp4a4_s3k8M6ht7kv8qyuSEwr'
-        # 'test': '/content/drive/MyDrive/CS 325B/8-same-models-more-data/ms-poultry.csv'
     }
 }
 
